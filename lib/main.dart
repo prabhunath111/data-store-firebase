@@ -15,7 +15,7 @@ class _HomePageState extends State<HomePage> {
   var dataDocs = [];
   var indexNumber;
   var items;
-  List<dynamic> list = new List();
+  List list = new List();
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
 
@@ -78,6 +78,13 @@ class _HomePageState extends State<HomePage> {
            }).toList();
 
            print('items $list');
+           print('length of list ${list.length}');
+
+           /*for(int i =0 ; i<list.length;i++){
+
+           }*/
+
+           print('check items ${items[0]['name']}');
 
             return ListView.builder(
               itemExtent: 80.0,
