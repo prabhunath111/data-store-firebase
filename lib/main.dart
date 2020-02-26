@@ -11,47 +11,73 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  var dataDocs = [];
+  var indexNumber;
+
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
+
+    dataDocs.add(document);
+
+    print('index_number ${document['index_number']} ');
+
     return ListTile(
-      title: Row(
-        children: <Widget>[
-          Expanded(
-            child: Text(
-              document['name'],
-              style: Theme.of(context).textTheme.headline,
-            ),
+        title: Row(
+      children: <Widget>[
+        Expanded(
+          child: Text(
+            document['name'],
+            style: Theme.of(context).textTheme.headline,
           ),
-          Container(
-            decoration: const BoxDecoration(color: Color(0xffddddff)),
-            padding: const EdgeInsets.all(10.0),
+        ),
+        Container(
+          decoration: const BoxDecoration(color: Color(0xffddddff)),
+          padding: const EdgeInsets.all(10.0),
+          child: FlatButton(
+            onPressed: () {
+              document.reference.updateData({'votes': document['votes'] + 1});
+            },
             child: Text(
               document['votes'].toString(),
               style: Theme.of(context).textTheme.display1,
             ),
           ),
-        ],
-      ),
-      onTap: () {
-        document.reference.updateData({'votes': document['votes'] + 1});
-      },
+        ),
+        IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () {
+              document.reference.delete();
+            })
+      ],
+    )
+
     );
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Data store'),
       ),
-      body: StreamBuilder(
+      body:
+
+      StreamBuilder(
+
           stream: Firestore.instance.collection('bandnames').snapshots(),
           builder: (context, snapshot) {
+
+            print('snapshot $snapshot');
             if (!snapshot.hasData) return const Text('Loading...');
+
             return ListView.builder(
               itemExtent: 80.0,
               itemCount: snapshot.data.documents.length,
-              itemBuilder: (context, index) =>
-                  _buildListItem(context, snapshot.data.documents[index]),
+              itemBuilder: (context, index) {
+                indexNumber = index;
+                return _buildListItem(
+                    context, snapshot.data.documents[indexNumber]);
+              },
             );
           }),
     );
