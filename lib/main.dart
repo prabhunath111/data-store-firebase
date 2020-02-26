@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+
 void main() => runApp(MaterialApp(
       home: HomePage(),
     ));
@@ -13,6 +14,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var dataDocs = [];
   var indexNumber;
+  var items;
+  List<dynamic> list = new List();
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot document) {
 
@@ -61,7 +64,6 @@ class _HomePageState extends State<HomePage> {
         title: Text('Data store'),
       ),
       body:
-
       StreamBuilder(
 
           stream: Firestore.instance.collection('bandnames').snapshots(),
@@ -70,16 +72,27 @@ class _HomePageState extends State<HomePage> {
             print('snapshot $snapshot');
             if (!snapshot.hasData) return const Text('Loading...');
 
+           items =  snapshot.data.documents;
+           list = items.map((DocumentSnapshot docsnapshot){
+             return docsnapshot.data;
+           }).toList();
+
+           print('items $list');
+
             return ListView.builder(
               itemExtent: 80.0,
               itemCount: snapshot.data.documents.length,
-              itemBuilder: (context, index) {
+              itemBuilder: (BuildContext context, index) {
                 indexNumber = index;
                 return _buildListItem(
                     context, snapshot.data.documents[indexNumber]);
               },
             );
+
           }),
     );
   }
+}
+
+class UserTask {
 }
